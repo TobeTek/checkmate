@@ -1,3 +1,4 @@
+import datetime
 from pymongo import MongoClient
 
 
@@ -35,7 +36,8 @@ def add_guild(col, guildData) -> int:
     :param guildData: The informations about the guild (check the docs for more infos on this object).
     """
     if not guild_exists(col, guildData["guildId"]):
-        recId = col.insert_one(guildData)
+        ts = datetime.datetime.now().timestamp()
+        recId = col.insert_one({**guildData, "created_at": ts})
         return recId
     else:
         raise Exception("A guild with the same id already exists!")
@@ -65,8 +67,9 @@ def update_guild(col, guildData) -> None:
     query = {"guildId": guildId}
 
     if guild_exists(col, guildId):
-        updatedGuildData = {"$set": guildData}
-        col.update_one(query, updatedGuildData)
+        ts = datetime.datetime.now().timestamp()
+        updatedGuildData = {**guildData, "updated_at": ts}
+        col.replace_one(query, updatedGuildData)
     else:
         raise Exception("No guild found with this id...")
 
@@ -94,7 +97,3 @@ def get_guilds(col) -> dict:
     res = col.find()
 
     return list(res)
-
-
-# conn = connect()
-# col = conn["db"].guilds

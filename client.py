@@ -6,8 +6,11 @@ import sys
 
 import discord
 from discord.ext import tasks, commands
+from discord.utils import get
 from discord.ext.commands import Bot
 from discord.ext.commands import Context
+
+from db.api import add_guild, connect, get_guild, remove_guild
 
 
 if not os.path.isfile("config.json"):
@@ -91,7 +94,7 @@ async def on_command_error(ctx: Context, error) -> None:
     :param ctx: The normal command that failed executing.
     :param error: The error that has been faced.
     """
-    
+
     if isinstance(error, commands.CommandOnCooldown):
         minutes, seconds = divmod(error.retry_after, 60)
         hours, minutes = divmod(minutes, 60)
@@ -123,21 +126,28 @@ async def on_command_error(ctx: Context, error) -> None:
 
 
 @client.event
-async def on_guild_join(guild):
+async def on_guild_join(guild) -> None:
     """
     The code in this event is executed every time the bot joins a guild
     """
-    
-    print(f"Just joined: {guild.name}")
+
+    conn = connect()
+    col = conn["db"].guilds
+    guildData = {"guildId": guild.id, "enabled": False, "extensions": None}
+
+    add_guild(col, guildData)
 
 
 @client.event
-async def on_guild_remove(guild):
+async def on_guild_remove(guild) -> None:
     """
     The code in this event is executed every time the leaves a guild
     """
-    
-    print(f"Just left: {guild.name}")
+
+    conn = connect()
+    col = conn["db"].guilds
+
+    remove_guild(col, guild.id)
 
 
 # Run the bot with the token
