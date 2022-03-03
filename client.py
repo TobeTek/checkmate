@@ -21,6 +21,8 @@ else:
 
 
 intents = discord.Intents.default()
+intents.members = True
+intents.reactions = True
 
 client = Bot(command_prefix=config["prefix"], intents=intents)
 
@@ -133,7 +135,7 @@ async def on_guild_join(guild) -> None:
 
     conn = connect()
     col = conn["db"].guilds
-    guildData = {"guildId": guild.id, "enabled": False, "extensions": None}
+    guildData = {"guildId": guild.id, "enabled": False, "extensions": {}}
 
     add_guild(col, guildData)
 
@@ -148,6 +150,26 @@ async def on_guild_remove(guild) -> None:
     col = conn["db"].guilds
 
     remove_guild(col, guild.id)
+
+
+@client.event
+async def on_member_join(member) -> None:
+    """
+    The code in this event is executed every time a member joins a guild
+    """
+    conn = connect()
+    col = conn["db"].guilds
+
+    guildData = get_guild(col, member.guild.id)
+
+    if "enabled" in guildData.keys() and guildData["enabled"]:
+        rolesIds = []
+        [rolesIds.append(role.id) for role in member.guild.roles]
+
+        # Give unchecked role to the user
+        if "uncheckedRoleId" in guildData.keys() and guildData["uncheckedRoleId"] in rolesIds:
+            uncheckedRole = get(member.guild.roles, id=guildData["uncheckedRoleId"])
+            await member.add_roles(uncheckedRole)
 
 
 # Run the bot with the token

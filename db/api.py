@@ -4,7 +4,7 @@ from pymongo import MongoClient
 
 def connect() -> dict:
     """
-    Create the connection to the database
+    Creates the connection to the database
     """
     try:
         conn = MongoClient()
@@ -16,7 +16,7 @@ def connect() -> dict:
 
 def guild_exists(col, guildId) -> bool:
     """
-    Check if a guild already exists in the database
+    Checks if a guild already exists in the database
     :param col: The database collection.
     :param guildId: The discord id of the guild.
     """
@@ -31,7 +31,7 @@ def guild_exists(col, guildId) -> bool:
 
 def add_guild(col, guildData) -> int:
     """
-    Add a guild to the database
+    Adds a guild to the database
     :param col: The database collection.
     :param guildData: The informations about the guild (check the docs for more infos on this object).
     """
@@ -45,7 +45,7 @@ def add_guild(col, guildData) -> int:
 
 def remove_guild(col, guildId) -> None:
     """
-    Remove a guild from the database
+    Removes a guild from the database
     :param col: The database collection.
     :param guildId: The discord id of the guild.
     """
@@ -76,7 +76,7 @@ def update_guild(col, guildData) -> None:
 
 def get_guild(col, guildId) -> dict:
     """
-    Retrieve a guild infos
+    Retrieves a guild infos
     :param col: The database collection.
     :param guildId: The discord id of the guild.
     """
@@ -91,7 +91,7 @@ def get_guild(col, guildId) -> dict:
 
 def get_guilds(col) -> dict:
     """
-    Retrieve all the guilds infos
+    Retrieves all the guilds infos
     :param col: The database collection.
     """
     res = col.find()

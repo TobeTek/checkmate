@@ -5,6 +5,7 @@ from discord.ext.commands import Context
 from db.api import connect, get_guild, update_guild
 
 from helpers import checks
+from helpers.embed import custom_embed
 
 
 class Disable(commands.Cog, name="disable"):
@@ -13,7 +14,7 @@ class Disable(commands.Cog, name="disable"):
 
     @commands.command(
         name="disable",
-        description="Disables the mail authentification on the server.",
+        description="Disables the email authentification on the server.",
     )
     @checks.is_owner()
     async def disable(self, ctx: Context) -> None:
@@ -23,12 +24,13 @@ class Disable(commands.Cog, name="disable"):
         guildData = get_guild(col, ctx.guild.id)
 
         # Check if the bot is already disabled
-        if guildData["enabled"]:
+        if "enabled" in guildData.keys() and guildData["enabled"]:
             # List all roles ids of the guild
             rolesIds = []
             [rolesIds.append(role.id) for role in ctx.guild.roles]
 
-            uncheckedRole = get(ctx.guild.roles, id=guildData["uncheckedRoleId"])
+            if "uncheckedRoleId" in guildData.keys() and guildData["uncheckedRoleId"] in rolesIds:
+                uncheckedRole = get(ctx.guild.roles, id=guildData["uncheckedRoleId"])
 
             perms = discord.Permissions()
             perms.update(
@@ -42,22 +44,35 @@ class Disable(commands.Cog, name="disable"):
             )
 
             # Give all perms to unchecked role
-            await uncheckedRole.edit(reason=None, permissions=perms) if uncheckedRole and guildData[
-                "uncheckedRoleId"
-            ] in rolesIds else None
+            await uncheckedRole.edit(reason=None, permissions=perms) if uncheckedRole else None
 
             # Delete check-infos channel
-            checkInfosChannel = get(ctx.guild.channels, id=guildData["checkInfosChannelId"])
+            checkInfosChannel = (
+                get(ctx.guild.channels, id=guildData["checkInfosChannelId"])
+                if "checkInfosChannelId" in guildData.keys()
+                else None
+            )
             await checkInfosChannel.delete() if checkInfosChannel else None
 
             del guildData["checkInfosChannelId"]
+            del guildData["checkInfosMessageId"]
 
             updatedGuildData = {**guildData, "enabled": False}
             update_guild(col, updatedGuildData)
 
-            await ctx.send("Disabled!")
+            await custom_embed(
+                self.client,
+                "Bot disabled!",
+                ctx.channel.id,
+                True,
+            )
         else:
-            await ctx.send("Already disabled!")
+            await custom_embed(
+                self.client,
+                "Bot is already disabled!",
+                ctx.channel.id,
+                False,
+            )
 
 
 def setup(client):
