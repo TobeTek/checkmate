@@ -32,10 +32,14 @@ class Leave(commands.Cog, name="leave"):
         await checkInfosChannel.delete() if checkInfosChannel else None
 
         uncheckedRole = (
-            get(ctx.guild.roles, id=guildData["uncheckedRoleId"]) if "uncheckedRoleId" in guildData.keys() else None
+            get(ctx.guild.roles, id=guildData["uncheckedRoleId"])
+            if "uncheckedRoleId" in guildData.keys()
+            else None
         )
         checkedRole = (
-            get(ctx.guild.roles, id=guildData["checkedRoleId"]) if "checkedRoleId" in guildData.keys() else None
+            get(ctx.guild.roles, id=guildData["checkedRoleId"])
+            if "checkedRoleId" in guildData.keys()
+            else None
         )
 
         # Delete checked & unchecked roles
