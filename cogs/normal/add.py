@@ -47,10 +47,14 @@ class Add(commands.Cog, name="add"):
                     None,
                 )
 
-                endpoint = await self.client.wait_for("message", check=checks.is_author(ctx.author), timeout=60 * 10)
+                endpoint = await self.client.wait_for(
+                    "message", check=checks.is_author(ctx.author), timeout=60 * 10
+                )
 
                 # Check is the endpoint is up / exists
-                if endpoint.author != self.client.user and is_endpoint_ok(endpoint.content):
+                if endpoint.author != self.client.user and is_endpoint_ok(
+                    endpoint.content
+                ):
                     extensions[extension] = endpoint.content
                 else:
                     await custom_embed(

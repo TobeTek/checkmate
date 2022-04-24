@@ -29,7 +29,10 @@ class Disable(commands.Cog, name="disable"):
             rolesIds = []
             [rolesIds.append(role.id) for role in ctx.guild.roles]
 
-            if "uncheckedRoleId" in guildData.keys() and guildData["uncheckedRoleId"] in rolesIds:
+            if (
+                "uncheckedRoleId" in guildData.keys()
+                and guildData["uncheckedRoleId"] in rolesIds
+            ):
                 uncheckedRole = get(ctx.guild.roles, id=guildData["uncheckedRoleId"])
 
             perms = discord.Permissions()
@@ -44,7 +47,9 @@ class Disable(commands.Cog, name="disable"):
             )
 
             # Give all perms to unchecked role
-            await uncheckedRole.edit(reason=None, permissions=perms) if uncheckedRole else None
+            await uncheckedRole.edit(
+                reason=None, permissions=perms
+            ) if uncheckedRole else None
 
             # Delete check-infos channel
             checkInfosChannel = (

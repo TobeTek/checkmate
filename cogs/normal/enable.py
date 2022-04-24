@@ -8,7 +8,8 @@ from discord.utils import get
 from discord.ext.commands import Context
 from discord.ui import Button, View
 from pydantic import validate_email
-from sympy import O
+
+# from sympy import O
 
 from db.api import connect, get_guild, update_guild
 
@@ -55,7 +56,9 @@ class Enable(commands.Cog, name="enable"):
             await member.send(embed=embed)
 
             # Ask for user's email
-            email = await self.client.wait_for("message", check=checks.is_author(member), timeout=60 * 10)
+            email = await self.client.wait_for(
+                "message", check=checks.is_author(member), timeout=60 * 10
+            )
 
             # Check is the email is valid
             try:
@@ -64,7 +67,10 @@ class Enable(commands.Cog, name="enable"):
                 isValid = False
 
             checkInfosChannel = (
-                get(self.client.get_guild(interaction.guild_id).channels, id=guildData["checkInfosChannelId"])
+                get(
+                    self.client.get_guild(interaction.guild_id).channels,
+                    id=guildData["checkInfosChannelId"],
+                )
                 if "checkInfosChannelId" in guildData.keys()
                 else None
             )
@@ -72,7 +78,9 @@ class Enable(commands.Cog, name="enable"):
             if isValid:
                 # If email-check extension is added, check if the email is in the endpoint
                 if "email-check" in guildData["extensions"]:
-                    if email_in_endpoint(email.content, guildData["extensions"]["email-check"]):
+                    if email_in_endpoint(
+                        email.content, guildData["extensions"]["email-check"]
+                    ):
                         pass
                     else:
                         embed = discord.Embed(
@@ -99,7 +107,9 @@ class Enable(commands.Cog, name="enable"):
                     self.client.get_guild(interaction.user.guild.id).name,
                     member.name,
                 )
-                userCode = await self.client.wait_for("message", check=checks.is_author(member), timeout=60 * 10)
+                userCode = await self.client.wait_for(
+                    "message", check=checks.is_author(member), timeout=60 * 10
+                )
 
                 # Check if the generated code and the code entered by theuser are the same
                 if realCode == userCode.content:
@@ -115,13 +125,23 @@ class Enable(commands.Cog, name="enable"):
                     [rolesIds.append(role.id) for role in member.guild.roles]
 
                     # Give checked role to the user
-                    if "checkedRoleId" in guildData.keys() and guildData["checkedRoleId"] in rolesIds:
-                        checkedRole = get(member.guild.roles, id=guildData["checkedRoleId"])
+                    if (
+                        "checkedRoleId" in guildData.keys()
+                        and guildData["checkedRoleId"] in rolesIds
+                    ):
+                        checkedRole = get(
+                            member.guild.roles, id=guildData["checkedRoleId"]
+                        )
                         await member.add_roles(checkedRole)
 
                     # Remove unchecked role from the user
-                    if "uncheckedRoleId" in guildData.keys() and guildData["uncheckedRoleId"] in rolesIds:
-                        uncheckedRole = get(member.guild.roles, id=guildData["uncheckedRoleId"])
+                    if (
+                        "uncheckedRoleId" in guildData.keys()
+                        and guildData["uncheckedRoleId"] in rolesIds
+                    ):
+                        uncheckedRole = get(
+                            member.guild.roles, id=guildData["uncheckedRoleId"]
+                        )
                         await member.remove_roles(uncheckedRole)
 
                 else:
@@ -159,7 +179,10 @@ class Enable(commands.Cog, name="enable"):
             [rolesIds.append(role.id) for role in ctx.guild.roles]
 
             # Role exists in the server & is already registered in db
-            if "uncheckedRoleId" in guildData and guildData["uncheckedRoleId"] in rolesIds:
+            if (
+                "uncheckedRoleId" in guildData
+                and guildData["uncheckedRoleId"] in rolesIds
+            ):
                 uncheckedRole = get(ctx.guild.roles, id=guildData["uncheckedRoleId"])
             else:
                 uncheckedRole = await ctx.guild.create_role(name="unchecked")
@@ -213,12 +236,16 @@ class Enable(commands.Cog, name="enable"):
 
             # Set check-infos channel perms (only viewable by unchecked role)
             overwrites = {
-                ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                ctx.guild.default_role: discord.PermissionOverwrite(
+                    read_messages=False
+                ),
                 uncheckedRole: discord.PermissionOverwrite(read_messages=True),
             }
 
             # Create check-infos channel
-            checkInfosChannel = await ctx.guild.create_text_channel("check-infos", overwrites=overwrites)
+            checkInfosChannel = await ctx.guild.create_text_channel(
+                "check-infos", overwrites=overwrites
+            )
 
             # Set description depending on the extentsions added
             description = (

@@ -4,6 +4,8 @@ import platform
 import random
 import sys
 
+import servus
+
 import discord
 from discord.ext import tasks, commands
 from discord.utils import get
@@ -56,7 +58,7 @@ client.remove_command("help")
 
 def load_commands(command_type: str) -> None:
     for file in os.listdir(f"./cogs/{command_type}"):
-        if file.endswith(".py"):
+        if file.endswith(".py") and not file.startswith("__"):
             extension = file[:-3]
             try:
                 client.load_extension(f"cogs.{command_type}.{extension}")
@@ -75,6 +77,7 @@ if __name__ == "__main__":
 
     # load_commands("slash") uncomment if slash commands are added to the bot
     load_commands("normal")
+    load_commands("accounts")
 
 
 @client.event
@@ -167,10 +170,16 @@ async def on_member_join(member) -> None:
         [rolesIds.append(role.id) for role in member.guild.roles]
 
         # Give unchecked role to the user
-        if "uncheckedRoleId" in guildData.keys() and guildData["uncheckedRoleId"] in rolesIds:
+        if (
+            "uncheckedRoleId" in guildData.keys()
+            and guildData["uncheckedRoleId"] in rolesIds
+        ):
             uncheckedRole = get(member.guild.roles, id=guildData["uncheckedRoleId"])
             await member.add_roles(uncheckedRole)
 
+
+# Add the createRequestClient coroutine to `client` async loop
+client.loop.create_task(servus.discord_utils.createRequestsClient(client))
 
 # Run the bot with the token
 client.run(config["token"])
