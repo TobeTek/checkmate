@@ -123,7 +123,7 @@ class Enable(commands.Cog, name="enable"):
 
                     rolesIds = []
                     [rolesIds.append(role.id) for role in member.guild.roles]
-
+                    #TODO: Send { email:$, user_id: $} to BE of WebAPP (Servus to the rescue)
                     # Give checked role to the user
                     if (
                         "checkedRoleId" in guildData.keys()
