@@ -14,6 +14,7 @@ from pydantic import validate_email
 from db.api import connect, get_guild, update_guild
 
 from helpers import checks
+from helpers import accounts
 from helpers.embed import custom_embed
 from helpers.requests import email_in_endpoint
 from mailing.api import send_code
@@ -123,7 +124,30 @@ class Enable(commands.Cog, name="enable"):
 
                     rolesIds = []
                     [rolesIds.append(role.id) for role in member.guild.roles]
-                    #TODO: Send { email:$, user_id: $} to BE of WebAPP (Servus to the rescue)
+
+                    # Update Website database with new user details
+                    payload = {"discordId": member.id, "email": email.content}
+
+                    embed = discord.Embed(
+                        title=f"checkmate | Updating Web App with new details",
+                        description=f"Updating website database with your information!",
+                        color=0xF6E6CC,
+                    )
+                    await member.send(embed=embed)
+
+                    print(f"\n{payload=}")
+                    status = accounts.link_user_account_to_webapp(payload)
+                    
+                    # Revert process
+                    if not status:
+                        embed = discord.Embed(
+                            title=f"checkmate | Check Process Error",
+                            description=f"> ❌ Oops, Couldn't reach the website API to complete verification! Try again in a few minutes.\n\nReact again with the message in {checkInfosChannel.mention} to start the process again.",
+                            color=0xF6E6CC,
+                        )
+                        await member.send(embed=embed)
+                        return 
+                        
                     # Give checked role to the user
                     if (
                         "checkedRoleId" in guildData.keys()

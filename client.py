@@ -26,7 +26,8 @@ intents = discord.Intents.default()
 intents.members = True
 intents.reactions = True
 
-client = Bot(command_prefix=config["prefix"], intents=intents)
+prefix = config.get("prefix", "&")
+client = Bot(command_prefix=commands.when_mentioned_or(prefix), intents=intents)
 
 
 @client.event
@@ -76,8 +77,8 @@ if __name__ == "__main__":
     """
 
     # load_commands("slash") uncomment if slash commands are added to the bot
-    load_commands("normal")
     # load_commands("accounts")
+    load_commands("normal")
 
 
 @client.event
