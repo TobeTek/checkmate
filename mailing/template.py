@@ -350,12 +350,12 @@ def template(guildName, memberName, code):
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                 <tr>
                                 <td>
-                                    <p>Hi <strong>%s</strong>,</p>
+                                    <p>Hi <strong>%s</strong> ,</p>
                                     <p>Find below the authentication code that will allow you to access the magical world of <strong>%s</strong>!</p>
                                     <br />
-                                    <p><strong>Authentication code:</strong> %s</p>
+                                    <p><code><strong>%s</strong></code></p>
                                     <br />
-                                    <img src="https://media.giphy.com/media/dYTfJZ2dCQBhK/giphy.gif" alt="gandalf" width="250" />
+                                    <img src="https://media.giphy.com/media/dYTfJZ2dCQBhK/giphy.gif" alt="gandalf" width="250" /> <br>
                                     <p>Have fun!</p>
                                 </td>
                                 </tr>
@@ -372,7 +372,7 @@ def template(guildName, memberName, code):
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                             <tr>
                             <td class="content-block">
-                                <span class="apple-link">This is an automatic message from <a href="https://google.com" style="text-decoration: underline !important; font-weight: bold !important;">checkmate</a> discord bot.</span>
+                                <span class="apple-link">This is an automatic message from <a href="https://github.com/thedynamics/checkmate" style="text-decoration: underline !important; font-weight: bold !important;">checkmate</a> discord bot.</span>
                             </td>
                             </tr>
                             <tr>
