@@ -1,5 +1,14 @@
+import os, sys, json
+
 import datetime
 from pymongo import MongoClient
+
+
+if not os.path.isfile("config.json"):
+    sys.exit("'config.json' not found! Please add it and try again.")
+else:
+    with open("config.json") as file:
+        config = json.load(file)
 
 
 def connect() -> dict:
@@ -7,7 +16,7 @@ def connect() -> dict:
     Creates the connection to the database
     """
     try:
-        conn = MongoClient()
+        conn = MongoClient(config["MONGO_DB_URL"])
         print("Connected successfully to MongoDB!")
         return {"conn": conn, "db": conn.checkmate}
     except:

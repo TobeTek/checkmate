@@ -137,6 +137,8 @@ class Enable(commands.Cog, name="enable"):
 
                     print(f"\n{payload=}")
                     status = accounts.link_user_account_to_webapp(payload)
+                    
+                    # Revert process
                     if not status:
                         embed = discord.Embed(
                             title=f"checkmate | Check Process Error",
@@ -144,7 +146,8 @@ class Enable(commands.Cog, name="enable"):
                             color=0xF6E6CC,
                         )
                         await member.send(embed=embed)
-
+                        return 
+                        
                     # Give checked role to the user
                     if (
                         "checkedRoleId" in guildData.keys()
