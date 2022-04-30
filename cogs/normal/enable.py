@@ -53,8 +53,7 @@ class Enable(commands.Cog, name="enable"):
         if member != self.client.user:
             embed = discord.Embed(
                 title=f"Checkmate | verification process 1/2",
-                description=f"> ✉️ Hi there, <br>
-                To access the server kindly send me the email associated with your account on The Dynamics App to receive a verification code\n\nDon't have an account? create one at https://app.thedynamics.tech/signup\n\nPS: it's the same as the one for Codetivate registration\n\nThanks!
+                description=f"> ✉️ Hi there,\n\nTo access the server kindly send me the email associated with your account on The Dynamics App to receive a verification code\n\nDon't have an account? create one at https://app.thedynamics.tech/signup\n\nPS: it's the same as the one for Codetivate registration\n\nThanks!
             .",
                 color=0xF6E6CC,
             )
@@ -205,7 +204,7 @@ class Enable(commands.Cog, name="enable"):
     async def add_vb(self, ctx: Context, verify_channel: discord.TextChannel):
 
         # Set description depending on the extentsions added
-        description = f"> To access this discord server, please click on the start verification button and follow the instructions that I will send in a private message!\n\nMake sure that you are already registered on **{ctx.guild}**'s App."
+        description = f">Hi there ✌😎 \n\nTo access this discord server, please click on the start verification button and follow the instructions that I will send in a private message!\n\nMake sure that you are already registered on **{ctx.guild}**'s App."
 
         embed = discord.Embed(
             title=f"Checkmate | unlock this server",
