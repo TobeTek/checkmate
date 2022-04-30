@@ -20,7 +20,7 @@ def link_user_account_to_webapp(user_details: dict, url_endpoint, retries=5) -> 
         adapter = HTTPAdapter(max_retries=retry)
         session.mount("http://", adapter)
         session.mount("https://", adapter)
-        resp = session.post(url_endpoint)
+        resp = session.post(url_endpoint, headers={'Content-Type': 'application/json'})
         print(f"{resp=} {resp.history} {resp.links}, {resp.json()}")
 
     else:
