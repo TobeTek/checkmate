@@ -35,10 +35,12 @@ class Enable(commands.Cog, name="enable"):
         """
         The code in this event is executed every time a member reacts to a message
         """
+        print("Handling Button Click")
         try:
             # Send empty message to avoid "interaction failed"" error
             await interaction.response.send_message()
-        except:
+        except Exception as e:
+            print(e)
             pass
 
         conn = connect()
@@ -64,7 +66,8 @@ class Enable(commands.Cog, name="enable"):
             # Check is the email is valid
             try:
                 isValid = validate_email(email.content)
-            except:
+            except Exception as e:
+                print(e)
                 isValid = False
 
             checkInfosChannel = (
@@ -129,25 +132,27 @@ class Enable(commands.Cog, name="enable"):
                     payload = {"discordId": member.id, "email": email.content}
 
                     embed = discord.Embed(
-                        title=f"checkmate | Updating Web App with new details",
+                        title=f"checkmate | Updating Website",
                         description=f"Updating website database with your information!",
                         color=0xF6E6CC,
                     )
                     await member.send(embed=embed)
 
                     print(f"\n{payload=}")
-                    status = accounts.link_user_account_to_webapp(payload)
-                    
+                    status = accounts.link_user_account_to_webapp(
+                        payload, self.config["ADD_VERIFIED_USER_EMAIL_ENDPOINT"]
+                    )
+
                     # Revert process
                     if not status:
                         embed = discord.Embed(
                             title=f"checkmate | Check Process Error",
-                            description=f"> ❌ Oops, Couldn't reach the website API to complete verification! Try again in a few minutes.\n\nReact again with the message in {checkInfosChannel.mention} to start the process again.",
+                            description=f"> ❌ Oops, Couldn't reach the website API to complete verification! Make sure you're registered on the website. Try again in a few minutes.\n\nReact again with the message in {checkInfosChannel.mention} to start the process again.",
                             color=0xF6E6CC,
                         )
                         await member.send(embed=embed)
-                        return 
-                        
+                        return
+
                     # Give checked role to the user
                     if (
                         "checkedRoleId" in guildData.keys()
@@ -184,6 +189,38 @@ class Enable(commands.Cog, name="enable"):
                 )
                 await member.send(embed=embed)
                 return
+
+    @commands.command(name="clear", help="this command will clear msgs in a cannel")
+    async def clear(
+        self, ctx: Context, channel_to_clear: discord.TextChannel, amount: int = 5
+    ):
+        await channel_to_clear.purge(limit=amount)
+
+    @commands.command(
+        name="add_vb", description="Add verify button to verify channel manually"
+    )
+    @checks.is_owner()
+    async def add_vb(self, ctx: Context, verify_channel: discord.TextChannel):
+
+        # Set description depending on the extentsions added
+        description = f"> In order to have access to the discord server, please react with this message and follow the instructions that I will send in a private message!\n\nMake sure that you are already registered on **{ctx.guild}**'s website."
+
+        embed = discord.Embed(
+            title=f"checkmate | Check Infos",
+            description=description,
+            color=0xF6E6CC,
+        )
+
+        # Create the button
+        button = Button(label="Start the check process", emoji="✅")
+
+        button.callback = self.handleButtonClick
+
+        view = View(timeout=None)
+        view.add_item(button)
+
+        # Send the message in chech-infos channel
+        message = await verify_channel.send(embed=embed, view=view)
 
     @commands.command(
         name="enable",
@@ -268,7 +305,7 @@ class Enable(commands.Cog, name="enable"):
 
             # Create check-infos channel
             checkInfosChannel = await ctx.guild.create_text_channel(
-                "check-infos", overwrites=overwrites
+                "verify-email", overwrites=overwrites
             )
 
             # Set description depending on the extentsions added
@@ -289,7 +326,7 @@ class Enable(commands.Cog, name="enable"):
 
             button.callback = self.handleButtonClick
 
-            view = View()
+            view = View(timeout=None)
             view.add_item(button)
 
             # Send the message in chech-infos channel

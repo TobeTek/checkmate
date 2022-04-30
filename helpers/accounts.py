@@ -1,23 +1,29 @@
-import requests
 import json
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 
-def link_user_account_to_webapp(user_details: dict, url_endpoint) -> bool:
-    """Check that 
+def link_user_account_to_webapp(user_details: dict, url_endpoint, retries=5) -> bool:
+    """Check that
     :param user_details: User's discord Id and email address
     :type: dict
     >>> user_details = { discordId: "254247454940069889", email: "test@email.com" }
     """
-
     # Sanity checks to make sure we have valid data
     if {"discordId", "email"}.issubset(user_details):
 
         data = json.dumps(user_details)
-        resp = requests.post(
-            url_endpoint,
-        )
-        return resp.ok
+
+        session = requests.Session()
+        retry = Retry(connect=8, backoff_factor=0.03)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        resp = session.post(url_endpoint)
+        print(f"{resp=} {resp.history} {resp.links}, {resp.json()}")
 
     else:
         # Invalid data was passed
+        print("Invalid data was passed")
         return False

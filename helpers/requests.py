@@ -12,4 +12,4 @@ def is_endpoint_ok(url):
 def email_in_endpoint(email, url):
     r = req.post(url, data={"email": email})
     res = r.json()
-    return res["success"]
+    return res.ok
