@@ -9,7 +9,7 @@ from db.api import connect, get_guild, update_guild
 
 from helpers import checks
 from helpers.embed import custom_embed
-from helpers.requests import is_endpoint_ok
+from helpers.api import is_endpoint_ok
 
 
 class Add(commands.Cog, name="add"):

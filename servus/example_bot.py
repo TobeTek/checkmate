@@ -20,7 +20,6 @@ async def on_ready():
     print("Logged in as " + str(bot.user))
     print("User ID: " + str(bot.user.id))
     r = await servus.get(bot.session, "https://reqres.in/api/users?page=2")
-    print(r)
 
     print("Ready!")
 

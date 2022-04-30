@@ -16,7 +16,7 @@ from db.api import connect, get_guild, update_guild
 from helpers import checks
 from helpers import accounts
 from helpers.embed import custom_embed
-from helpers.requests import email_in_endpoint
+from helpers.api import email_in_endpoint
 from mailing.api import send_code
 
 
@@ -111,22 +111,13 @@ class Enable(commands.Cog, name="enable"):
                     self.client.get_guild(interaction.user.guild.id).name,
                     member.name,
                 )
+                print(f"\n\n{realCode=}")
                 userCode = await self.client.wait_for(
                     "message", check=checks.is_author(member), timeout=60 * 10
                 )
 
                 # Check if the generated code and the code entered by theuser are the same
                 if realCode == userCode.content:
-                    embed = discord.Embed(
-                        title=f"checkmate | Check Process Completed",
-                        description=f"🎉 Congrats, you are now checked!",
-                        color=0xF6E6CC,
-                    )
-                    embed.set_footer(text="Made with 🤍 by Bonsaï#8521")
-                    await member.send(embed=embed)
-
-                    rolesIds = []
-                    [rolesIds.append(role.id) for role in member.guild.roles]
 
                     # Update Website database with new user details
                     payload = {"discordId": member.id, "email": email.content}
@@ -152,6 +143,17 @@ class Enable(commands.Cog, name="enable"):
                         )
                         await member.send(embed=embed)
                         return
+
+                    embed = discord.Embed(
+                        title=f"checkmate | Check Process Completed",
+                        description=f"🎉 Congrats, you are now checked!",
+                        color=0xF6E6CC,
+                    )
+                    embed.set_footer(text="Made with 🤍 by Bonsaï#8521")
+                    await member.send(embed=embed)
+
+                    rolesIds = []
+                    [rolesIds.append(role.id) for role in member.guild.roles]
 
                     # Give checked role to the user
                     if (
@@ -216,7 +218,7 @@ class Enable(commands.Cog, name="enable"):
 
         button.callback = self.handleButtonClick
 
-        view = View(timeout=None)
+        view = View(timeout=60 * 15)
         view.add_item(button)
 
         # Send the message in chech-infos channel
