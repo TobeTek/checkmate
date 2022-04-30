@@ -179,6 +179,11 @@ async def on_member_join(member) -> None:
             await member.add_roles(uncheckedRole)
 
 
+@client.command()
+async def ping(ctx: Context):
+    await ctx.send("Hello Beautiful World! 🚌")
+
+
 # Add the createRequestClient coroutine to `client` async loop
 client.loop.create_task(servus.discord_utils.createRequestsClient(client))
 
