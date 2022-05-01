@@ -52,8 +52,9 @@ class Enable(commands.Cog, name="enable"):
 
         if member != self.client.user:
             embed = discord.Embed(
-                title=f"checkmate | Check Process 1/2",
-                description=f"> ✉️ This is the beginning of the check process! Please send me your email.",
+                title=f"Checkmate | verification process 1/2",
+                description=f"> ✉️ Hi there,\n\nTo access the server kindly send me the email associated with your account on The Dynamics App to receive a verification code\n\nDon't have an account? create one at https://app.thedynamics.tech/signup\n\nPS: it's the same as the one for Codetivate registration\n\nThanks!
+            .",
                 color=0xF6E6CC,
             )
             await member.send(embed=embed)
@@ -88,16 +89,15 @@ class Enable(commands.Cog, name="enable"):
                         pass
                     else:
                         embed = discord.Embed(
-                            title=f"checkmate | Check Process Error",
-                            description=f"> ❌ Oops, you are not registered on **{self.client.get_guild(interaction.user.guild.id).name}**'s website... Make sure that you entered the email you registered with on their website!\n\nReact again with the message in {checkInfosChannel.mention} to start the process again.",
+                            title=f"Checkmate | verification failed",
+                            description=f"> ❌ Oops, you don't have an account on **{self.client.get_guild(interaction.user.guild.id).name}**'s app... make sure that you entered the email you registered with on the website!\n\nClick on the verification button in {checkInfosChannel.mention} to start the process again.",
                             color=0xF6E6CC,
                         )
-                        embed.set_footer(text="Made with 🤍 by Bonsaï#8521")
                         await member.send(embed=embed)
                         return
 
                 embed = discord.Embed(
-                    title=f"checkmate | Check Process 2/2",
+                    title=f"Checkmate | verification process 2/2",
                     description=f"> 🔒 A verification code has just been sent to your email. Please enter the code you received!",
                     color=0xF6E6CC,
                 )
@@ -123,8 +123,8 @@ class Enable(commands.Cog, name="enable"):
                     payload = {"discordId": member.id, "email": email.content}
 
                     embed = discord.Embed(
-                        title=f"checkmate | Updating Website",
-                        description=f"Updating website database with your information!",
+                        title=f"Checkmate | securing connection",
+                        description=f"Connecting your account to the app...",
                         color=0xF6E6CC,
                     )
                     await member.send(embed=embed)
@@ -137,19 +137,18 @@ class Enable(commands.Cog, name="enable"):
                     # Revert process
                     if not status:
                         embed = discord.Embed(
-                            title=f"checkmate | Check Process Error",
-                            description=f"> ❌ Oops, Couldn't reach the website API to complete verification! Make sure you're registered on the website. Try again in a few minutes.\n\nReact again with the message in {checkInfosChannel.mention} to start the process again.",
+                            title=f"Checkmate | verification failed",
+                            description=f"> ❌ Oops, Couldn't complete your verification! Make sure you have an account on the app before trying again. If you have an account, try again in few minutes.\n\nCick the verification button in {checkInfosChannel.mention} to start the process again.",
                             color=0xF6E6CC,
                         )
                         await member.send(embed=embed)
                         return
 
                     embed = discord.Embed(
-                        title=f"checkmate | Check Process Completed",
-                        description=f"🎉 Congrats, you are now checked!",
+                        title=f"Checkmate | verification successful",
+                        description=f"🎉 Congrats, you are now verified!",
                         color=0xF6E6CC,
                     )
-                    embed.set_footer(text="Made with 🤍 by Bonsaï#8521")
                     await member.send(embed=embed)
 
                     rolesIds = []
@@ -177,8 +176,8 @@ class Enable(commands.Cog, name="enable"):
 
                 else:
                     embed = discord.Embed(
-                        title=f"checkmate | Check Process Error",
-                        description=f"> ❌ Oops, the code is not valid!\n\nReact again with the message in {checkInfosChannel.mention} to start the process again.",
+                        title=f"Checkmate | invalid code",
+                        description=f"> ❌ Oops, invalid code entered!\n\nClick on the verification button in {checkInfosChannel.mention} to start the process again.",
                         color=0xF6E6CC,
                     )
                     await member.send(embed=embed)
@@ -186,7 +185,7 @@ class Enable(commands.Cog, name="enable"):
             else:
                 embed = discord.Embed(
                     title=f"checkmate | Check Process Error",
-                    description=f"> ❌ Oops, the email you entered is not valid!\n\nReact again with the message in {checkInfosChannel.mention} to start the process again.",
+                    description=f"> ❌ Oops, the email you entered is invalid!\n\nClick on the verification button in {checkInfosChannel.mention} to start the process again.",
                     color=0xF6E6CC,
                 )
                 await member.send(embed=embed)
@@ -205,16 +204,16 @@ class Enable(commands.Cog, name="enable"):
     async def add_vb(self, ctx: Context, verify_channel: discord.TextChannel):
 
         # Set description depending on the extentsions added
-        description = f"> In order to have access to the discord server, please react with this message and follow the instructions that I will send in a private message!\n\nMake sure that you are already registered on **{ctx.guild}**'s website."
+        description = f">Hi there ✌😎 \n\nTo access this discord server, please click on the start verification button and follow the instructions that I will send in a private message!\n\nMake sure that you are already registered on **{ctx.guild}**'s App."
 
         embed = discord.Embed(
-            title=f"checkmate | Check Infos",
+            title=f"Checkmate | unlock this server",
             description=description,
             color=0xF6E6CC,
         )
 
         # Create the button
-        button = Button(label="Start the check process", emoji="✅")
+        button = Button(label="Start your verification", emoji="✅")
 
         button.callback = self.handleButtonClick
 
